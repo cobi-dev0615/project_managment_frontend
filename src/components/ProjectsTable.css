@@ -1,0 +1,94 @@
+.projects-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-secondary);
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-secondary);
+}
+
+.projects-table thead {
+  background: var(--bg-hover);
+}
+
+.projects-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.projects-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.projects-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.projects-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-description,
+.table-features {
+  max-width: 300px;
+}
+
+.truncate-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+}
+
+.table-urls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.table-url {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.table-url:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .projects-table-container {
+    font-size: 0.9rem;
+  }
+  
+  .projects-table th,
+  .projects-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .table-description,
+  .table-features {
+    max-width: 200px;
+  }
+}

@@ -1,0 +1,137 @@
+.view-modal {
+  max-width: 700px;
+}
+
+.view-modal-body {
+  padding: 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.view-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.view-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.view-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.view-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.view-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.copy-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.copy-btn:active {
+  transform: scale(0.95);
+}
+
+.view-value {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.view-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.view-urls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.view-url-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.view-url-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.view-url {
+  color: var(--primary);
+  text-decoration: none;
+  word-break: break-all;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.view-url:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+@media (max-width: 768px) {
+  .view-modal {
+    max-width: 95%;
+  }
+  
+  .view-modal-body {
+    padding: 1rem;
+    max-height: 50vh;
+  }
+  
+  .view-row {
+    padding-bottom: 1rem;
+  }
+  
+  .view-label-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .copy-btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+}

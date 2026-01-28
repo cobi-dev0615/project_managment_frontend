@@ -1,24 +1,36 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { ThemeProvider } from './contexts/ThemeContext';
+import Header from './components/Header';
+import ProjectsList from './components/ProjectsList';
+import TypesList from './components/TypesList';
+import DivisionsList from './components/DivisionsList';
 import './App.css';
 
 function App() {
+  const [activeTab, setActiveTab] = useState('projects');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'projects':
+        return <ProjectsList />;
+      case 'types':
+        return <TypesList />;
+      case 'divisions':
+        return <DivisionsList />;
+      default:
+        return <ProjectsList />;
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        <Header activeTab={activeTab} onTabChange={setActiveTab} />
+        <main className="main-content">
+          {renderContent()}
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
 
