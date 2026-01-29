@@ -44,6 +44,17 @@
   max-width: 300px;
 }
 
+.table-cell-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.table-cell-copy .truncate-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .truncate-text {
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -57,6 +68,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.table-url-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .table-url {

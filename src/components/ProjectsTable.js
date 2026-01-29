@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ProjectsTable.css';
 
 const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
+  const [copiedField, setCopiedField] = useState(null);
+
+  const handleCopy = async (text, fieldKey) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldKey);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      alert('Failed to copy to clipboard');
+    }
+  };
+
   if (projects.length === 0) {
     return (
       <div className="empty-state">
@@ -28,23 +41,43 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
           {projects.map(project => (
             <tr key={project.id}>
               <td>
-                <span className="badge badge-type">{project.type.name}</span>
+                <span className="badge badge-type">{project.type?.name}</span>
               </td>
               <td>
-                <span className="badge badge-division">{project.division.name}</span>
+                <span className="badge badge-division">{project.division?.name}</span>
               </td>
               <td>{project.shortDescription || '-'}</td>
               <td className="table-description">
                 {project.description ? (
-                  <div className="truncate-text" title={project.description}>
-                    {project.description}
+                  <div className="table-cell-copy">
+                    <div className="truncate-text" title={project.description}>
+                      {project.description}
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-copy"
+                      onClick={() => handleCopy(project.description, `${project.id}-description`)}
+                      title="Copy description"
+                    >
+                      {copiedField === `${project.id}-description` ? '✓ Copied' : '📋 Copy'}
+                    </button>
                   </div>
                 ) : '-'}
               </td>
               <td className="table-features">
                 {project.feature ? (
-                  <div className="truncate-text" title={project.feature}>
-                    {project.feature}
+                  <div className="table-cell-copy">
+                    <div className="truncate-text" title={project.feature}>
+                      {project.feature}
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-copy"
+                      onClick={() => handleCopy(project.feature, `${project.id}-feature`)}
+                      title="Copy features"
+                    >
+                      {copiedField === `${project.id}-feature` ? '✓ Copied' : '📋 Copy'}
+                    </button>
                   </div>
                 ) : '-'}
               </td>
@@ -52,15 +85,24 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
                 {project.urls && project.urls.length > 0 ? (
                   <div className="table-urls">
                     {project.urls.map((url, index) => (
-                      <a
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="table-url"
-                      >
-                        🔗 {project.urls.length > 1 ? `${index + 1}` : 'Visit'}
-                      </a>
+                      <div key={index} className="table-url-row">
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="table-url"
+                        >
+                          🔗 {project.urls.length > 1 ? `${index + 1}` : 'Visit'}
+                        </a>
+                        <button
+                          type="button"
+                          className="btn-copy"
+                          onClick={() => handleCopy(url, `${project.id}-url-${index}`)}
+                          title="Copy URL"
+                        >
+                          {copiedField === `${project.id}-url-${index}` ? '✓ Copied' : '📋 Copy'}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 ) : '-'}
