@@ -48,7 +48,7 @@ const ProjectCard = ({ project, onView, onEdit, onDelete }) => {
               onClick={(e) => { e.stopPropagation(); handleCopy(project.description, 'description'); }}
               title="Copy description"
             >
-              {copiedField === 'description' ? '✓ Copied' : '📋 Copy'}
+              {copiedField === 'description' ? '✓' : '📋'}
             </button>
           </div>
         )}
@@ -70,7 +70,7 @@ const ProjectCard = ({ project, onView, onEdit, onDelete }) => {
                   onClick={(e) => { e.stopPropagation(); handleCopy(url, `url-${index}`); }}
                   title="Copy URL"
                 >
-                  {copiedField === `url-${index}` ? '✓ Copied' : '📋 Copy'}
+                  {copiedField === `url-${index}` ? '✓' : '📋'}
                 </button>
               </div>
             ))}
@@ -90,7 +90,7 @@ const ProjectCard = ({ project, onView, onEdit, onDelete }) => {
                 onClick={(e) => { e.stopPropagation(); handleCopy(project.feature, 'feature'); }}
                 title="Copy features"
               >
-                {copiedField === 'feature' ? '✓ Copied' : '📋 Copy'}
+                {copiedField === 'feature' ? '✓' : '📋'}
               </button>
             </div>
           </div>

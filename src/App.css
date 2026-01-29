@@ -51,17 +51,18 @@
   border-color: var(--primary);
 }
 
-/* Compact copy button for list/table */
+/* Icon-only copy button for list/table */
 .btn-copy {
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem;
   border: 1px solid var(--border-color);
   border-radius: 6px;
   background: var(--bg-secondary);
   color: var(--text-primary);
-  font-size: 0.8rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .btn-copy:hover {

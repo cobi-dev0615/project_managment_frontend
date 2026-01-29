@@ -59,7 +59,7 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
                       onClick={() => handleCopy(project.description, `${project.id}-description`)}
                       title="Copy description"
                     >
-                      {copiedField === `${project.id}-description` ? '✓ Copied' : '📋 Copy'}
+                      {copiedField === `${project.id}-description` ? '✓' : '📋'}
                     </button>
                   </div>
                 ) : '-'}
@@ -76,7 +76,7 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
                       onClick={() => handleCopy(project.feature, `${project.id}-feature`)}
                       title="Copy features"
                     >
-                      {copiedField === `${project.id}-feature` ? '✓ Copied' : '📋 Copy'}
+                      {copiedField === `${project.id}-feature` ? '✓' : '📋'}
                     </button>
                   </div>
                 ) : '-'}
@@ -100,7 +100,7 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
                           onClick={() => handleCopy(url, `${project.id}-url-${index}`)}
                           title="Copy URL"
                         >
-                          {copiedField === `${project.id}-url-${index}` ? '✓ Copied' : '📋 Copy'}
+                          {copiedField === `${project.id}-url-${index}` ? '✓' : '📋'}
                         </button>
                       </div>
                     ))}
