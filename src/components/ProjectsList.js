@@ -4,6 +4,7 @@ import ProjectCard from './ProjectCard';
 import ProjectsTable from './ProjectsTable';
 import ProjectModal from './ProjectModal';
 import ProjectViewModal from './ProjectViewModal';
+import SearchableSelect from './SearchableSelect';
 import './ProjectsList.css';
 
 const ProjectsList = () => {
@@ -145,27 +146,25 @@ const ProjectsList = () => {
   return (
     <div className="projects-list">
       <div className="projects-header">
-        <select
+        <SearchableSelect
           value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
+          onChange={setFilterType}
+          options={types}
+          placeholder="All Types"
+          allowEmpty
+          emptyLabel="All Types"
           className="filter-select"
-        >
-          <option value="">All Types</option>
-          {types.map(type => (
-            <option key={type.id} value={type.id}>{type.name}</option>
-          ))}
-        </select>
+        />
         
-        <select
+        <SearchableSelect
           value={filterDivision}
-          onChange={(e) => setFilterDivision(e.target.value)}
+          onChange={setFilterDivision}
+          options={divisions}
+          placeholder="All Divisions"
+          allowEmpty
+          emptyLabel="All Divisions"
           className="filter-select"
-        >
-          <option value="">All Divisions</option>
-          {divisions.map(division => (
-            <option key={division.id} value={division.id}>{division.name}</option>
-          ))}
-        </select>
+        />
 
         <div className="search-container">
           <input

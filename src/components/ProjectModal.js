@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { projectsAPI } from '../services/api';
+import SearchableSelect from './SearchableSelect';
 import './Modal.css';
 
 const ProjectModal = ({ project, types, divisions, onClose, onSave }) => {
@@ -110,34 +111,28 @@ const ProjectModal = ({ project, types, divisions, onClose, onSave }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-group">
             <label htmlFor="typeId">Type *</label>
-            <select
+            <SearchableSelect
               id="typeId"
               name="typeId"
               value={formData.typeId}
-              onChange={handleChange}
+              onChange={(val) => setFormData(prev => ({ ...prev, typeId: val }))}
+              options={types}
+              placeholder="Select a type"
               required
-            >
-              <option value="">Select a type</option>
-              {types.map(type => (
-                <option key={type.id} value={type.id}>{type.name}</option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="divisionId">Division *</label>
-            <select
+            <SearchableSelect
               id="divisionId"
               name="divisionId"
               value={formData.divisionId}
-              onChange={handleChange}
+              onChange={(val) => setFormData(prev => ({ ...prev, divisionId: val }))}
+              options={divisions}
+              placeholder="Select a division"
               required
-            >
-              <option value="">Select a division</option>
-              {divisions.map(division => (
-                <option key={division.id} value={division.id}>{division.name}</option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="form-group">
