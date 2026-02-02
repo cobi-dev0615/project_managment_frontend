@@ -20,7 +20,7 @@ export const authService = {
   async login(identifier, password) {
     const email = await resolveLoginIdentifier(identifier);
     if (!email) {
-      throw { message: 'User not found. Use your email to sign in, or ensure the profiles setup is complete.' };
+      throw new Error('User not found. Use your email to sign in, or ensure the profiles setup is complete.');
     }
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

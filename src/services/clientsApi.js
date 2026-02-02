@@ -4,7 +4,9 @@ const BUCKET = 'avatars';
 
 const handleError = (error) => {
   console.error('Clients API error:', error);
-  throw { response: { data: { error: error.message || 'An error occurred' } } };
+  const err = new Error(error.message || 'An error occurred');
+  err.response = { data: { error: err.message } };
+  throw err;
 };
 
 function getStorageSetupUrl() {
