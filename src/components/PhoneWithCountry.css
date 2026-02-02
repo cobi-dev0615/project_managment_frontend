@@ -1,0 +1,41 @@
+.phone-with-country {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.phone-with-country .phone-country-select {
+  flex: 0 0 180px;
+  min-width: 140px;
+}
+
+.phone-with-country .phone-number-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.phone-with-country .phone-number-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.phone-with-country .phone-number-input::placeholder {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+  .phone-with-country {
+    flex-direction: column;
+  }
+
+  .phone-with-country .phone-country-select {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}

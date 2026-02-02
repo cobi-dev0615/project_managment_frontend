@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { divisionsAPI } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
+import ConfirmModal from './ConfirmModal';
 import './TypesList.css';
 
 const DivisionsList = () => {
+  const toast = useToast();
   const [divisions, setDivisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
   const [newName, setNewName] = useState('');
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     loadDivisions();
@@ -20,7 +24,7 @@ const DivisionsList = () => {
       setDivisions(response.data);
     } catch (error) {
       console.error('Error loading divisions:', error);
-      alert('Failed to load divisions. Please check if the backend server is running.');
+      toast.error('Failed to load divisions. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -34,9 +38,10 @@ const DivisionsList = () => {
       await divisionsAPI.create({ name: newName.trim() });
       setNewName('');
       loadDivisions();
+      toast.success('Division added successfully');
     } catch (error) {
       console.error('Error creating division:', error);
-      alert(error.response?.data?.error || 'Failed to create division');
+      toast.error(error.response?.data?.error || 'Failed to create division');
     }
   };
 
@@ -53,9 +58,10 @@ const DivisionsList = () => {
       setEditingId(null);
       setEditName('');
       loadDivisions();
+      toast.success('Division updated');
     } catch (error) {
       console.error('Error updating division:', error);
-      alert(error.response?.data?.error || 'Failed to update division');
+      toast.error(error.response?.data?.error || 'Failed to update division');
     }
   };
 
@@ -64,20 +70,27 @@ const DivisionsList = () => {
     setEditName('');
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this division? This will fail if there are projects using it.')) {
-      try {
-        await divisionsAPI.delete(id);
-        loadDivisions();
-      } catch (error) {
-        console.error('Error deleting division:', error);
-        alert(error.response?.data?.error || 'Failed to delete division');
-      }
+  const handleDeleteConfirm = async () => {
+    if (!deleteId) return;
+    try {
+      await divisionsAPI.delete(deleteId);
+      loadDivisions();
+      toast.success('Division deleted');
+      setDeleteId(null);
+    } catch (error) {
+      console.error('Error deleting division:', error);
+      toast.error(error.response?.data?.error || 'Failed to delete division');
+      setDeleteId(null);
     }
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loading">
+        <div className="spinner" aria-hidden="true" />
+        <span>Loading divisions...</span>
+      </div>
+    );
   }
 
   return (
@@ -102,7 +115,9 @@ const DivisionsList = () => {
       <div className="items-grid">
         {divisions.length === 0 ? (
           <div className="empty-state">
-            <p>No divisions found. Create your first division!</p>
+            <div className="empty-state-icon" aria-hidden="true">📂</div>
+            <h3 className="empty-state-title">No divisions yet</h3>
+            <p className="empty-state-text">Create divisions like education, fitness, or healthcare.</p>
           </div>
         ) : (
           divisions.map(division => (
@@ -146,7 +161,7 @@ const DivisionsList = () => {
                     </button>
                     <button
                       className="btn-icon"
-                      onClick={() => handleDelete(division.id)}
+                      onClick={() => setDeleteId(division.id)}
                       title="Delete"
                     >
                       🗑️
@@ -158,6 +173,16 @@ const DivisionsList = () => {
           ))
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Delete Division"
+        message="Are you sure? This will fail if any projects use this division."
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteId(null)}
+      />
     </div>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { projectsAPI } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import SearchableSelect from './SearchableSelect';
 import './Modal.css';
 
 const ProjectModal = ({ project, types, divisions, onClose, onSave }) => {
+  const toast = useToast();
   const [formData, setFormData] = useState({
     typeId: '',
     divisionId: '',
@@ -65,14 +67,14 @@ const ProjectModal = ({ project, types, divisions, onClose, onSave }) => {
     
     // Validate type and division
     if (!formData.typeId || !formData.divisionId) {
-      alert('Type and Division are required');
+      toast.error('Type and Division are required');
       return;
     }
 
     // Validate all URLs
     for (const url of formData.urls) {
       if (url && url.trim() !== '' && !validateURL(url)) {
-        alert(`Please enter a valid URL (e.g., https://example.com): ${url}`);
+        toast.error(`Please enter a valid URL (e.g., https://example.com)`);
         return;
       }
     }
@@ -92,9 +94,10 @@ const ProjectModal = ({ project, types, divisions, onClose, onSave }) => {
         await projectsAPI.create(submitData);
       }
       onSave();
+      toast.success(project ? 'Project updated' : 'Project created');
     } catch (error) {
       console.error('Error saving project:', error);
-      alert(error.response?.data?.error || 'Failed to save project');
+      toast.error(error.response?.data?.error || 'Failed to save project');
     } finally {
       setLoading(false);
     }

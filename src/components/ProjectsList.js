@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { projectsAPI, typesAPI, divisionsAPI } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import ProjectCard from './ProjectCard';
 import ProjectsTable from './ProjectsTable';
 import ProjectModal from './ProjectModal';
 import ProjectViewModal from './ProjectViewModal';
 import SearchableSelect from './SearchableSelect';
+import ConfirmModal from './ConfirmModal';
 import './ProjectsList.css';
 
 const ProjectsList = () => {
+  const toast = useToast();
   const [projects, setProjects] = useState([]);
   const [types, setTypes] = useState([]);
   const [divisions, setDivisions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
   const [viewingProject, setViewingProject] = useState(null);
   const [filterType, setFilterType] = useState('');
@@ -22,7 +26,7 @@ const ProjectsList = () => {
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [activeFilterType, setActiveFilterType] = useState('');
   const [activeFilterDivision, setActiveFilterDivision] = useState('');
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'table'
+  const [viewMode, setViewMode] = useState('list');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -47,7 +51,7 @@ const ProjectsList = () => {
       setDivisions(divisionsRes.data);
     } catch (error) {
       console.error('Error loading data:', error);
-      alert('Failed to load data. Please check if the backend server is running.');
+      toast.error('Failed to load data. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -68,15 +72,19 @@ const ProjectsList = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this project?')) {
-      try {
-        await projectsAPI.delete(id);
-        loadData();
-      } catch (error) {
-        console.error('Error deleting project:', error);
-        alert('Failed to delete project');
-      }
+  const handleDeleteClick = (id) => setDeleteConfirm({ id });
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm) return;
+    try {
+      await projectsAPI.delete(deleteConfirm.id);
+      loadData();
+      toast.success('Project deleted successfully');
+      setDeleteConfirm(null);
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('Failed to delete project');
+      setDeleteConfirm(null);
     }
   };
 
@@ -140,12 +148,19 @@ const ProjectsList = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loading">
+        <div className="spinner" aria-hidden="true" />
+        <span>Loading projects...</span>
+      </div>
+    );
   }
+
+  const hasActiveFilters = activeFilterType || activeFilterDivision || activeSearchQuery;
 
   return (
     <div className="projects-list">
-      <div className="projects-header">
+      <section className="projects-header" aria-label="Filter and search projects">
         <SearchableSelect
           value={filterType}
           onChange={setFilterType}
@@ -155,7 +170,6 @@ const ProjectsList = () => {
           emptyLabel="All Types"
           className="filter-select"
         />
-        
         <SearchableSelect
           value={filterDivision}
           onChange={setFilterDivision}
@@ -165,8 +179,7 @@ const ProjectsList = () => {
           emptyLabel="All Divisions"
           className="filter-select"
         />
-
-        <div className="search-container">
+        <div className="search-row">
           <input
             type="text"
             placeholder="Search in description and features..."
@@ -174,44 +187,56 @@ const ProjectsList = () => {
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
             className="search-input"
+            aria-label="Search in description and features"
           />
+          <button className="btn btn-search" onClick={handleSearch}>
+            Search
+          </button>
         </div>
-
-        <button className="btn btn-search" onClick={handleSearch} title="Search">
-          🔍 Search
-        </button>
-
-        <div className="view-toggle">
+        <div className="view-toggle" role="group" aria-label="View mode">
           <button
             className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
             onClick={() => setViewMode('list')}
             title="List view"
+            aria-pressed={viewMode === 'list'}
           >
-            ☰
+            List
           </button>
           <button
             className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
             onClick={() => setViewMode('table')}
             title="Table view"
+            aria-pressed={viewMode === 'table'}
           >
-            ⧉
+            Table
           </button>
         </div>
-
-        <button className="btn btn-primary" onClick={handleCreate}>
-          + New Project
-        </button>
-
-        {(activeFilterType || activeFilterDivision || activeSearchQuery) && (
-          <button className="btn btn-clear" onClick={handleClearSearch} title="Clear all filters">
-            ✕ Clear
+        <div className="projects-header-actions">
+          {hasActiveFilters && (
+            <button className="btn btn-clear" onClick={handleClearSearch}>
+              Clear filters
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={handleCreate}>
+            New Project
           </button>
-        )}
-      </div>
+        </div>
+      </section>
 
       {filteredProjects.length === 0 ? (
         <div className="empty-state">
-          <p>No projects found. {activeSearchQuery || activeFilterType || activeFilterDivision ? 'Try adjusting your search or filters.' : 'Create your first project!'}</p>
+          <div className="empty-state-icon" aria-hidden="true">📋</div>
+          <h3 className="empty-state-title">No projects found</h3>
+          <p className="empty-state-text">
+            {hasActiveFilters
+              ? 'Try adjusting your search or filters to see more results.'
+              : 'Get started by creating your first project.'}
+          </p>
+          {!hasActiveFilters && (
+            <button className="btn btn-primary" onClick={handleCreate}>
+              Create Project
+            </button>
+          )}
         </div>
       ) : (
         <>
@@ -223,7 +248,7 @@ const ProjectsList = () => {
                   project={project}
                   onView={handleView}
                   onEdit={handleEdit}
-                  onDelete={handleDelete}
+                  onDelete={handleDeleteClick}
                 />
               ))}
             </div>
@@ -232,7 +257,7 @@ const ProjectsList = () => {
               projects={paginatedProjects}
               onView={handleView}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
             />
           )}
 
@@ -277,6 +302,17 @@ const ProjectsList = () => {
           onSave={handleModalSave}
         />
       )}
+
+      <ConfirmModal
+        isOpen={!!deleteConfirm}
+        title="Delete Project"
+        message="Are you sure you want to delete this project? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteConfirm(null)}
+      />
     </div>
   );
 };

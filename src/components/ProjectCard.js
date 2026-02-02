@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useToast } from '../contexts/ToastContext';
 import './ProjectCard.css';
 
 const ProjectCard = ({ project, onView, onEdit, onDelete }) => {
+  const toast = useToast();
   const [copiedField, setCopiedField] = useState(null);
 
   const handleCopy = async (text, fieldName) => {
@@ -11,7 +13,7 @@ const ProjectCard = ({ project, onView, onEdit, onDelete }) => {
       setTimeout(() => setCopiedField(null), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
-      alert('Failed to copy to clipboard');
+      toast.error('Failed to copy to clipboard');
     }
   };
 

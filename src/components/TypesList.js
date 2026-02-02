@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { typesAPI } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
+import ConfirmModal from './ConfirmModal';
 import './TypesList.css';
 
 const TypesList = () => {
+  const toast = useToast();
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
   const [newName, setNewName] = useState('');
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     loadTypes();
@@ -20,7 +24,7 @@ const TypesList = () => {
       setTypes(response.data);
     } catch (error) {
       console.error('Error loading types:', error);
-      alert('Failed to load types. Please check if the backend server is running.');
+      toast.error('Failed to load types. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -34,9 +38,10 @@ const TypesList = () => {
       await typesAPI.create({ name: newName.trim() });
       setNewName('');
       loadTypes();
+      toast.success('Type added successfully');
     } catch (error) {
       console.error('Error creating type:', error);
-      alert(error.response?.data?.error || 'Failed to create type');
+      toast.error(error.response?.data?.error || 'Failed to create type');
     }
   };
 
@@ -53,9 +58,10 @@ const TypesList = () => {
       setEditingId(null);
       setEditName('');
       loadTypes();
+      toast.success('Type updated');
     } catch (error) {
       console.error('Error updating type:', error);
-      alert(error.response?.data?.error || 'Failed to update type');
+      toast.error(error.response?.data?.error || 'Failed to update type');
     }
   };
 
@@ -64,20 +70,27 @@ const TypesList = () => {
     setEditName('');
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this type? This will fail if there are projects using it.')) {
-      try {
-        await typesAPI.delete(id);
-        loadTypes();
-      } catch (error) {
-        console.error('Error deleting type:', error);
-        alert(error.response?.data?.error || 'Failed to delete type');
-      }
+  const handleDeleteConfirm = async () => {
+    if (!deleteId) return;
+    try {
+      await typesAPI.delete(deleteId);
+      loadTypes();
+      toast.success('Type deleted');
+      setDeleteId(null);
+    } catch (error) {
+      console.error('Error deleting type:', error);
+      toast.error(error.response?.data?.error || 'Failed to delete type');
+      setDeleteId(null);
     }
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loading">
+        <div className="spinner" aria-hidden="true" />
+        <span>Loading types...</span>
+      </div>
+    );
   }
 
   return (
@@ -102,7 +115,9 @@ const TypesList = () => {
       <div className="items-grid">
         {types.length === 0 ? (
           <div className="empty-state">
-            <p>No types found. Create your first type!</p>
+            <div className="empty-state-icon" aria-hidden="true">🏷️</div>
+            <h3 className="empty-state-title">No types yet</h3>
+            <p className="empty-state-text">Create project types like mobile, web, or automation.</p>
           </div>
         ) : (
           types.map(type => (
@@ -146,7 +161,7 @@ const TypesList = () => {
                     </button>
                     <button
                       className="btn-icon"
-                      onClick={() => handleDelete(type.id)}
+                      onClick={() => setDeleteId(type.id)}
                       title="Delete"
                     >
                       🗑️
@@ -158,6 +173,16 @@ const TypesList = () => {
           ))
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        title="Delete Type"
+        message="Are you sure? This will fail if any projects use this type."
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setDeleteId(null)}
+      />
     </div>
   );
 };

@@ -2,6 +2,29 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Authentication Setup
+
+The app uses Supabase Auth for login and register. To enable username login:
+
+1. Open your Supabase project dashboard → **SQL Editor**
+2. Run the script in `supabase-setup.sql`
+
+This creates:
+- `profiles` table (username, full_name, email)
+- `get_email_for_username` function (for login with username)
+- Trigger to auto-create profile on signup
+
+**Note:** Email-only login works without the setup. Username login requires the SQL to be run.
+
+## Profile Setup
+
+For extended profile (image, birthday, education, work experience, portfolios):
+
+1. Run `supabase-profile-schema.sql` in the Supabase SQL Editor
+2. Create the `avatars` storage bucket (required for profile image upload):
+   - See **STORAGE_SETUP.md** for step-by-step instructions
+   - Or: Dashboard → **Storage** → **New bucket** → Name: `avatars`, Public: **Yes** → Add policies for upload and read
+
 ## Available Scripts
 
 In the project directory, you can run:

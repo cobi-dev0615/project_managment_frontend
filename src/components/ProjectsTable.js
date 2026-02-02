@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useToast } from '../contexts/ToastContext';
 import './ProjectsTable.css';
 
 const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
+  const toast = useToast();
   const [copiedField, setCopiedField] = useState(null);
 
   const handleCopy = async (text, fieldKey) => {
@@ -11,7 +13,7 @@ const ProjectsTable = ({ projects, onView, onEdit, onDelete }) => {
       setTimeout(() => setCopiedField(null), 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
-      alert('Failed to copy to clipboard');
+      toast.error('Failed to copy to clipboard');
     }
   };
 
