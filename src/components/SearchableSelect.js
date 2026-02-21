@@ -64,7 +64,6 @@ const SearchableSelect = ({
         onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        aria-required={required}
       >
         <span className={!displayValue && allowEmpty ? 'placeholder' : ''}>
           {displayValue || (allowEmpty ? emptyLabel : placeholder)}

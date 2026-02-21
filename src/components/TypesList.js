@@ -15,6 +15,7 @@ const TypesList = () => {
 
   useEffect(() => {
     loadTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadTypes = async () => {

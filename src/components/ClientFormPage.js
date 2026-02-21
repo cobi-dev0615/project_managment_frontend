@@ -166,16 +166,6 @@ const ClientFormPage = ({ clientId, onSave, onCancel }) => {
     e.target.value = '';
   };
 
-  const handlePortfolioImage = (pfIdx, imgIdx, value) => {
-    setForm((f) => {
-      const pfs = [...f.portfolios];
-      const imgs = [...(pfs[pfIdx].images || [''])];
-      imgs[imgIdx] = value;
-      pfs[pfIdx] = { ...pfs[pfIdx], images: imgs };
-      return { ...f, portfolios: pfs };
-    });
-  };
-
   const addPortfolioImage = (pfIdx) => {
     setForm((f) => {
       const pfs = [...f.portfolios];
@@ -292,18 +282,6 @@ const ClientFormPage = ({ clientId, onSave, onCancel }) => {
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
       />
-    </div>
-  );
-
-  const fgSelect = (label, id, value, onChange, options, required = false) => (
-    <div className="form-group" key={id}>
-      <label htmlFor={id}>{label}{required && ' *'}</label>
-      <select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
-        <option value="">Select...</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
-      </select>
     </div>
   );
 

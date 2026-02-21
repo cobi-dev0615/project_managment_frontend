@@ -46,6 +46,7 @@ const ClientsList = () => {
 
   useEffect(() => {
     if (user?.id) loadClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   useEffect(() => {
